@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-
+const io=require("../socket")
 const { validationResult } = require('express-validator/check');
 
 const Post = require('../models/post');
@@ -59,6 +59,7 @@ exports.createPost = async (req, res, next) => {
       post: post,
       creator: { _id: user._id, name: user.name }
     });
+    io.getIO().emit("posts", {action:"create",post:post})
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;

@@ -61,15 +61,15 @@ mongoose
          useNewUrlParser: true,
          useUnifiedTopology: true 
   }
-  ) 
+  )
+  .then(con=>{
+    console.log("connected to database")
+  }) 
   .then(result => {
-    console.log("connected to the database")
-    const http = require('http');
-    const server = http.createServer(app);
-    const { Server } = require("socket.io");
-    const io = new Server(server);
-    server.listen(8080, () => {
-      console.log('listening on *:8080');
+    const server = app.listen(8080);
+    const io = require('./socket').init(server);
+    io.on('connection', socket => {
+      console.log('Client connected');
     });
   })
   .catch(err => {
