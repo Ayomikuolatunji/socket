@@ -64,13 +64,13 @@ mongoose
   ) 
   .then(result => {
     console.log("connected to the database")
-    const server = app.listen(8080,()=>{
-      console.log("port running on localhost 3000")
+    const http = require('http');
+    const server = http.createServer(app);
+    const { Server } = require("socket.io");
+    const io = new Server(server);
+    server.listen(8080, () => {
+      console.log('listening on *:3000');
     });
-    const io=require("socket.io")(server)
-    io.on("connection", stream=>{
-      console.log("someone connected")
-    })
   })
   .catch(err => {
     console.log(err);
