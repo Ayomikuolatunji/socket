@@ -69,7 +69,7 @@ mongoose
     const { Server } = require("socket.io");
     const io = new Server(server);
     server.listen(8080, () => {
-      console.log('listening on *:3000');
+      console.log('listening on *:8080');
     });
   })
   .catch(err => {
