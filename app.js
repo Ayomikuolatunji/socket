@@ -1,10 +1,13 @@
 const path = require('path');
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const multer = require('multer');
+
 const feedRoutes = require('./routes/feed');
-const authRoutes=require("./routes/auth")
+const authRoutes = require('./routes/auth');
+
 const app = express();
 
 const fileStorage = multer.diskStorage({
@@ -46,32 +49,34 @@ app.use((req, res, next) => {
 });
 
 app.use('/feed', feedRoutes);
-app.use("/auth", authRoutes)
+app.use('/auth', authRoutes);
+
 app.use((error, req, res, next) => {
   console.log(error);
   const status = error.statusCode || 500;
   const message = error.message;
-  const data=error.data
-  res.status(status).json({ message ,data});
+  const data = error.data;
+  res.status(status).json({ message: message, data: data });
 });
 
 mongoose
   .connect(
     'mongodb+srv://mongoose:john123@cluster0.xcjno.mongodb.net/microservice',{
-         useNewUrlParser: true,
-         useUnifiedTopology: true 
+        useNewUrlParser: true,
+        useUnifiedTopology: true 
   }
   )
-  .then(con=>{
-    console.log("connected to database")
-  }) 
   .then(result => {
     const server = app.listen(8080);
-    const io = require('./socket').init(server);
+    const io = require('./socket').init(server,{
+      cors: {
+        origin: "http://localhost:3000",
+        methods: ["GET", "POST"],
+        credentials: true
+      }
+    });
     io.on('connection', socket => {
       console.log('Client connected');
     });
   })
-  .catch(err => {
-    console.log(err);
-});
+  .catch(err => console.log(err));
