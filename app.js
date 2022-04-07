@@ -62,13 +62,15 @@ mongoose
          useUnifiedTopology: true 
   }
   ) 
-  .then(con=>{
-    console.log("connected to the database")
-  })
   .then(result => {
-    app.listen(8080,()=>{
+    console.log("connected to the database")
+    const server = app.listen(8080,()=>{
       console.log("port running on localhost 3000")
     });
+    const io=require("socket.io")(server)
+    io.on("connection", stream=>{
+      console.log("someone connected")
+    })
   })
   .catch(err => {
     console.log(err);
